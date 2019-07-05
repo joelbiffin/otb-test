@@ -10,7 +10,8 @@ class DirectedGraphHandler(object):
         :param user_input: string representation of jobs and their dependencies
         """
         self.graph = {}
-        self._build_graph(self._parse_user_input(user_input))
+        input_rows = self._parse_user_input(user_input)
+        self.graph = self._build_graph(input_rows)
 
     def topological_sort(self) -> List[str]:
         """
@@ -65,7 +66,6 @@ class DirectedGraphHandler(object):
         :return: hashtable representing the graph of jobs and dependencies
         """
         temp_graph = {}
-
         for node in nodes:
             # catching duplicate jobs
             if node[0] in temp_graph:

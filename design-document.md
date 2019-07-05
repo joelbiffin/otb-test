@@ -16,7 +16,7 @@ A string representation of a list of jobs with corresponding dependencies.
 The above means that Job `c` must happen before Job `b` and Job `a` can 
 happen at any time.
 
- > Output: `"cab"` or `"cba"`
+ > Output: `"cab"`, `"cba"` or `"acb"`
 
 
 ## Design
