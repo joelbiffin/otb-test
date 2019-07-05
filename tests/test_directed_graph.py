@@ -83,10 +83,10 @@ class TestDirectedGraphHandler(TestCase):
         # graph with multiple jobs, no dependencies
         handler.graph = {"a": "", "b": "", "c": ""}
         result2 = handler.topological_sort()
-        expected_outputs2 = {
+        expected_outputs2 = [
             ["a", "b", "c"], ["b", "c", "a"], ["c", "a", "b"],
             ["a", "c", "b"], ["c", "b", "a"], ["b", "a", "c"]
-        }
+        ]
         self.assertIn(result2, expected_outputs2)
 
         handler.graph.clear()
@@ -94,20 +94,21 @@ class TestDirectedGraphHandler(TestCase):
         # graph with multiple jobs, one dependency
         handler.graph = {"a": "", "b": "c", "c": ""}
         result3 = handler.topological_sort()
-        expected_outputs3 = {["c", "b", "a"], ["c", "a", "b"]}
+        expected_outputs3 = [["c", "b", "a"], ["c", "a", "b"],
+                             ["a", "c", "b"]]
         self.assertIn(result3, expected_outputs3)
 
         handler.graph.clear()
 
         # graph with multiple dependencies
         handler.graph = {
-            "a": "", "b": "c", "c": "f", "d": "a", "e": "b", "f": ""
+            "a": "b", "b": "", "c": "a", "d": "a"
         }
         result4 = handler.topological_sort()
-        expected_outputs4 = {
-            ["f", "c", "b", "a", "d", "e"],
-            ["f", "c", "b", "a", "e", "f"]
-        }
+        expected_outputs4 = [
+            ["b", "a", "c", "d"],
+            ["b", "a", "d", "c"]
+        ]
         self.assertIn(result4, expected_outputs4)
 
 

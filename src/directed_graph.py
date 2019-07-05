@@ -10,6 +10,7 @@ class DirectedGraphHandler(object):
         :param user_input: string representation of jobs and their dependencies
         """
         self.graph = {}
+        self._build_graph(self._parse_user_input(user_input))
 
     def topological_sort(self) -> List[str]:
         """
@@ -18,7 +19,27 @@ class DirectedGraphHandler(object):
         :return: list of jobs from graph in topological sort
         """
         out_list = []
-        # TODO: topologically sort directed graph
+        start_nodes = set(key for key, value in self.graph.items() if value == "")
+        aux_graph = self.graph.copy()
+
+        # This algorithm works well for smaller examples. To optimise for larger
+        # problems, our graph should contain a list of incoming nodes as well
+        # as outgoing nodes and therefore the linear search through all of
+        # the keys in the graph could be replaced with a loop through the
+        # "outgoing" node list for "this_node"
+        while start_nodes:
+            this_node = start_nodes.pop()
+            out_list.append(this_node)
+
+            for key, value in aux_graph.items():
+                if value == this_node:
+                    aux_graph[key] = ""
+                    start_nodes.add(key)
+
+        if len(out_list) != len(self.graph.keys()):
+            raise ValueError("There is no way of jobs happening in series based "
+                             "on the dependencies provided.")
+
         return out_list
 
     @property
@@ -44,7 +65,27 @@ class DirectedGraphHandler(object):
         :return: hashtable representing the graph of jobs and dependencies
         """
         temp_graph = {}
-        # TODO: build graph from list of tuples
+
+        for node in nodes:
+            # catching duplicate jobs
+            if node[0] in temp_graph:
+                raise IOError("Job with label {} duplicated in input"
+                              "\nJobs cannot have multiple dependencies.".format(node[0]))
+
+            # catching self loops
+            if node[0] == node[1]:
+                raise IOError("Job with label {} cannot be dependent upon "
+                              "itself".format(node[0]))
+
+            temp_graph[node[0]] = node[1]
+
+        keys = temp_graph.keys()
+        for key, value in temp_graph.items():
+            if value not in keys and value != "":
+                raise IOError("Job with label {} cannot depend on Job {} "
+                              "since Job {} does not exist."
+                              .format(key, value, value))
+
         return temp_graph
 
     @staticmethod
@@ -56,6 +97,15 @@ class DirectedGraphHandler(object):
         :param user_input: string representation of jobs and their dependencies
         :return: list of tuples containing of the form (job, dependency)
         """
-        rows = [()]
-        # TODO: turn string user input into list of tuples
+        rows = []
+
+        for row in user_input.split(","):
+            if "=>" not in row:
+                raise IOError("The information entered did not follow the "
+                              "program description.\n\t \"a => , b => c, "
+                              "c => \".")
+
+            key, value = row.split("=>")
+            rows.append((key.strip(), value.strip()))
+
         return rows
