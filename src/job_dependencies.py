@@ -1,4 +1,4 @@
-from src.directed_graph import DirectedGraphHandler
+from directed_graph import DirectedGraphHandler
 
 
 def process_user_input(user_input: str):
@@ -20,4 +20,4 @@ def process_user_input(user_input: str):
 
 
 process_user_input(input("Please enter the job dependency"
-                         " list in the form, \"a => , b => a\":\t"))
+                         " list in the form, a => , b => a (no quotes):\t"))

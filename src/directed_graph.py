@@ -45,7 +45,7 @@ class DirectedGraphHandler(object):
 
     @property
     def sorted_nodes(self):
-        return "{}".format(str(self.topological_sort()))
+        return "".join(self.topological_sort())
 
     @staticmethod
     def _add_trailing_comma(string: str) -> str:
